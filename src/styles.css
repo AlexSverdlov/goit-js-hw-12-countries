@@ -1,0 +1,9 @@
+.country {
+  display: flex;
+}
+.info {
+  margin-right: 30px;
+}
+.flag {
+  width: 400px;
+}
