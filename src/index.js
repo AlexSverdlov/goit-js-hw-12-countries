@@ -1,6 +1,6 @@
 // Подключение модулей
 import './styles.css';
-const debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
 import { alert, error, defaultModules } from '@pnotify/core/dist/PNotify.js';
 import * as PNotifyMobile from '@pnotify/mobile/dist/PNotifyMobile.js';
 import '@pnotify/core/dist/PNotify.css';
@@ -25,33 +25,34 @@ refs.inputText.addEventListener(
 // Функция обработки события input
 function onInputChange(value) {
   refs.listCountres.innerHTML = '';
-  if (value) {
-    fetch(`https://restcountries.eu/rest/v2/name/${value}`)
-      .then(responce => {
-        return responce.json();
-      })
-      .then(country => {
-        if (country.length === 1) {
-          const markup = itemsCountry(country[0]);
-          refs.cardContainer.innerHTML = markup;
-        } else if (country.length > 1 && country.length <= 10) {
-          const markup = itemsMenu(country);
-          refs.listCountres.innerHTML = markup;
-        } else if (country.length > 10) {
-          error({
-            text: `Кол-во результатов поиска по строке "${value}" больше 10! Уточните параметры поиска`,
-          });
-        } else if (country.length === undefined) {
-          alert({
-            text: `"${value}" - Такой страны нет!`,
-          });
-        }
-        console.log(country.length);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  refs.cardContainer.innerHTML = '';
+  if (!value) {
+    return;
   }
+  fetch(`https://restcountries.eu/rest/v2/name/${value}`)
+    .then(responce => {
+      return responce.json();
+    })
+    .then(country => {
+      if (country.length === 1) {
+        const markup = itemsCountry(country[0]);
+        refs.cardContainer.innerHTML = markup;
+      } else if (country.length > 1 && country.length <= 10) {
+        const markup = itemsMenu(country);
+        refs.listCountres.innerHTML = markup;
+      } else if (country.length > 10) {
+        error({
+          text: `Кол-во результатов поиска по строке "${value}" больше 10! Уточните параметры поиска`,
+        });
+      } else if (country.length === undefined) {
+        alert({
+          text: `"${value}" - Такой страны нет!`,
+        });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }
 
 // Обработчик события click на элементе меню
